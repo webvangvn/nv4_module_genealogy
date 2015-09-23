@@ -2,18 +2,18 @@
 
 /**
  * @Project NUKEVIET 4.x
- * @Author VINADES.,JSC (contact@vinades.vn)
- * @Copyright (C) 2014 VINADES.,JSC. All rights reserved
- * @Language Tiếng Việt
- * @License CC BY-SA (http://creativecommons.org/licenses/by-sa/4.0/)
- * @Createdate Mar 04, 2010, 03:22:00 PM
+ * @Author webvang (hoang.nguyen@webvang.vn)
+ * @Copyright (C) 2015 Webvang. All rights reserved
+ * @License GNU/GPL version 2 or any later version
+ * @Createdate 11/10/2015 00:00
  */
+
 
 if( ! defined( 'NV_MAINFILE' ) ) die( 'Stop!!!' );
 
-$lang_translator['author'] = 'VINADES.,JSC (contact@vinades.vn)';
-$lang_translator['createdate'] = '04/03/2010, 15:22';
-$lang_translator['copyright'] = '@Copyright (C) 2012 VINADES.,JSC. All rights reserved';
+$lang_translator['author'] = 'WebVang (hoang.nguyen@webvang.vn)';
+$lang_translator['createdate'] = '11/10/2015, 0:00';
+$lang_translator['copyright'] = '@Copyright (C) 2015 Webvang. All rights reserved';
 $lang_translator['info'] = '';
 $lang_translator['langtype'] = 'lang_module';
 
