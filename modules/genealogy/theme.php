@@ -17,13 +17,20 @@ function view_location( $array_fampage, $fid, $page, $generate_page )
 
 	$xtpl = new XTemplate( 'view_location.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file );
 	$xtpl->assign( 'LANG', $lang_module );
-	
+	$i=1;
 	foreach( $array_fampage as $city_i =>  $rowscity ){
+		
+		
 		$rowscity['link']='location';
 		$xtpl->assign( 'DATA',  $rowscity);
 		if($rowscity ['number']>0){
 			$xtpl->parse( 'main.looptr.looptd.number' );
 		}
+		if($i>=4){
+			$xtpl->parse( 'main.looptr.looptd.break' );
+			$i=0;
+		}
+		$i++;
 		$xtpl->parse( 'main.looptr.looptd' );
 		
 	}
@@ -545,65 +552,38 @@ function no_permission()
 	return $xtpl->text( 'no_permission' );
 }
 
-function topic_theme( $topic_array, $topic_other_array, $generate_page, $page_title, $description, $topic_image )
+function viewfam_location( $genealogy_array, $page_title )
 {
 	global $lang_module, $module_info, $module_name, $module_file, $topicalias, $module_config;
 
-	$xtpl = new XTemplate( 'topic.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file );
+	$xtpl = new XTemplate( 'location.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file );
 	$xtpl->assign( 'LANG', $lang_module );
-	$xtpl->assign( 'TOPPIC_TITLE', $page_title );
+	$xtpl->assign( 'LOCAL_TITLE', $page_title );
 	$xtpl->assign( 'IMGWIDTH1', $module_config[$module_name]['homewidth'] );
-	if( ! empty( $description ) )
+	if( ! empty(  $genealogy_array ) )
 	{
-		$xtpl->assign( 'TOPPIC_DESCRIPTION', $description );
-		if( ! empty( $topic_image ) )
+		foreach(  $genealogy_array as  $genealogy_array_i )
 		{
-			$xtpl->assign( 'HOMEIMG1', $topic_image );
-			$xtpl->parse( 'main.topicdescription.image' );
-		}
-		$xtpl->parse( 'main.topicdescription' );
-	}
-	if( ! empty( $topic_array ) )
-	{
-		foreach( $topic_array as $topic_array_i )
-		{
-			$xtpl->assign( 'TOPIC', $topic_array_i );
-			$xtpl->assign( 'TIME', date( 'H:i', $topic_array_i['publtime'] ) );
-			$xtpl->assign( 'DATE', date( 'd/m/Y', $topic_array_i['publtime'] ) );
+			$xtpl->assign( 'DATA', $genealogy_array_i );
+			$xtpl->assign( 'TIME', date( 'H:i',  $genealogy_array_i['publtime'] ) );
+			$xtpl->assign( 'DATE', date( 'd/m/Y',  $genealogy_array_i['publtime'] ) );
 
-			if( ! empty( $topic_array_i['src'] ) )
+			if( ! empty(  $genealogy_array_i['src'] ) )
 			{
-				$xtpl->parse( 'main.topic.homethumb' );
+				$xtpl->parse( 'main.loop.homethumb' );
 			}
 
 			if( defined( 'NV_IS_MODADMIN' ) )
 			{
-				$xtpl->assign( 'ADMINLINK', nv_link_edit_page( $topic_array_i['id'] ) . ' ' . nv_link_delete_page( $topic_array_i['id'] ) );
-				$xtpl->parse( 'main.topic.adminlink' );
+				$xtpl->assign( 'ADMINLINK', nv_link_edit_page(  $genealogy_array_i['id'] ) . ' ' . nv_link_delete_page(  $genealogy_array_i['id'] ) );
+				$xtpl->parse( 'main.loop.adminlink' );
 			}
 
-			$xtpl->parse( 'main.topic' );
+			$xtpl->parse( 'main.loop' );
 		}
 	}
 
-	if( ! empty( $topic_other_array ) )
-	{
-		foreach( $topic_other_array as $topic_other_array_i )
-		{
-			$topic_other_array_i['publtime'] = nv_date( 'H:i d/m/Y', $topic_other_array_i['publtime'] );
-
-			$xtpl->assign( 'TOPIC_OTHER', $topic_other_array_i );
-			$xtpl->parse( 'main.other.loop' );
-		}
-
-		$xtpl->parse( 'main.other' );
-	}
-
-	if( ! empty( $generate_page ) )
-	{
-		$xtpl->assign( 'GENERATE_PAGE', $generate_page );
-		$xtpl->parse( 'main.generate_page' );
-	}
+	
 
 	$xtpl->parse( 'main' );
 	return $xtpl->text( 'main' );

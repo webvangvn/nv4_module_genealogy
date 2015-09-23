@@ -10,8 +10,8 @@
 
 if( ! defined( 'NV_ADMIN' ) or ! defined( 'NV_MAINFILE' ) or ! defined( 'NV_IS_MODADMIN' ) ) die( 'Stop!!!' );
 
-$table = NV_PREFIXLANG . '_location';
-$result = $db->query( 'SHOW TABLE STATUS LIKE ' . $db->quote( $table . '_%' ) );
+$tablelocation = NV_PREFIXLANG . '_location';
+$result = $db->query( 'SHOW TABLE STATUS LIKE ' . $db->quote( $tablelocation . '_%' ) );
 $checklocation=0;
 while( $item = $result->fetch( ) )
 {
@@ -24,7 +24,7 @@ while( $item = $result->fetch( ) )
 
 if ($checklocation > 0) {
 	define( 'NV_MODULE_LOCATION', true );
-	$sql = 'SELECT city_id, title, type FROM ' . $table. '_city WHERE status=1 ORDER BY weight ASC';
+	$sql = 'SELECT city_id, title, type FROM ' . $tablelocation. '_city WHERE status=1 ORDER BY weight ASC';
 	$global_array_location_city = nv_db_cache( $sql, 'city_id', 'location' );
 	
 }
