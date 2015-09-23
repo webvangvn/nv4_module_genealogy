@@ -465,65 +465,6 @@ function detail_theme( $news_contents, $array_keyword, $related_new_array, $rela
 		$xtpl->parse( 'main.socialbutton' );
 	}
 
-	if( ! empty( $related_new_array ) or ! empty( $related_array ) or ! empty( $topic_array ) )
-	{
-		if( ! empty( $related_new_array ) )
-		{
-			foreach( $related_new_array as $key => $related_new_array_i )
-			{
-				$related_new_array_i['hometext'] = nv_clean60( $related_new_array_i['hometext'], $module_config[$module_name]['tooltip_length'], true );
-				$newday = $related_new_array_i['time'] + ( 86400 * $related_new_array_i['newday'] );
-				if( $newday >= NV_CURRENTTIME )
-				{
-					$xtpl->parse( 'main.others.related_new.loop.newday' );
-				}
-				$related_new_array_i['time'] = nv_date( 'd/m/Y', $related_new_array_i['time'] );
-				$xtpl->assign( 'RELATED_NEW', $related_new_array_i );
-				if( ! empty( $module_config[$module_name]['showtooltip'] ) ) $xtpl->parse( 'main.others.related_new.loop.tooltip' );
-				$xtpl->parse( 'main.others.related_new.loop' );
-			}
-			unset( $key );
-			$xtpl->parse( 'main.others.related_new' );
-		}
-
-		if( ! empty( $related_array ) )
-		{
-			foreach( $related_array as $related_array_i )
-			{
-				$related_array_i['hometext'] = nv_clean60( $related_array_i['hometext'], $module_config[$module_name]['tooltip_length'], true );
-				$newday = $related_array_i['time'] + ( 86400 * $related_array_i['newday'] );
-				if( $newday >= NV_CURRENTTIME )
-				{
-					$xtpl->parse( 'main.others.related.loop.newday' );
-				}
-				$related_array_i['time'] = nv_date( 'd/m/Y', $related_array_i['time'] );
-				$xtpl->assign( 'RELATED', $related_array_i );
-				if( ! empty( $module_config[$module_name]['showtooltip'] ) ) $xtpl->parse( 'main.others.related.loop.tooltip' );
-				$xtpl->parse( 'main.others.related.loop' );
-			}
-			$xtpl->parse( 'main.others.related' );
-		}
-
-		if( ! empty( $topic_array ) )
-		{
-			foreach( $topic_array as $key => $topic_array_i )
-			{
-				$topic_array_i['hometext'] = nv_clean60( $topic_array_i['hometext'], $module_config[$module_name]['tooltip_length'], true );
-				$newday = $topic_array_i['time'] + ( 86400 * $topic_array_i['newday'] );
-				if( $newday >= NV_CURRENTTIME )
-				{
-					$xtpl->parse( 'main.others.topic.loop.newday' );
-				}
-				$topic_array_i['time'] = nv_date( 'd/m/Y', $topic_array_i['time'] );
-				$xtpl->assign( 'TOPIC', $topic_array_i );
-				if( ! empty( $module_config[$module_name]['showtooltip'] ) ) $xtpl->parse( 'main.others.topic.loop.tooltip' );
-				$xtpl->parse( 'main.others.topic.loop' );
-			}
-			$xtpl->parse( 'main.others.topic' );
-		}
-
-        $xtpl->parse( 'main.others' );
-	}
 
 	if( ! empty( $content_comment ) )
 	{

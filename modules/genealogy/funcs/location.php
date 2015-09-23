@@ -81,7 +81,7 @@ if( isset( $array_op[1] ) )
 
 			$end_weight++;
 			$item['number']=$end_weight;
-			$item['link'] = $global_array_fam[$item['fid']]['link'] . '/' . $item['alias'] . '-' . $item['id'] . $global_config['rewrite_exturl'];
+			$item['link'] = $global_array_fam[$item['fid']]['link'] . '/' . $item['alias']  . $global_config['rewrite_exturl'];
 			$item_array[] = $item;
 		}
 		$result->closeCursor();
