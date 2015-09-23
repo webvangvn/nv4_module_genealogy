@@ -182,7 +182,20 @@ if( empty( $contents ) )
 	}
 	elseif( $viewfam == 'view_location' ) // Xem theo địa điểm
 	{
-		$contents = call_user_func( $viewfam, $array_fampage, 0, ( $page - 1 ) * $per_page, $generate_page );
+		foreach( $global_array_location_city as $city_i =>  $rowscity ){
+			$db->sqlreset()
+			->select( 'COUNT(*) ')
+			->from( NV_PREFIXLANG . '_' . $module_data . '_genealogy' )
+			->where( 'status= 1 AND inhome=1 AND cityid='. $rowscity["city_id"].'');
+			$num_items = $db->query( $db->sql() )->fetchColumn();
+			$array_fampage[$city_i]['link']='location';
+			$array_fampage[$city_i]['title']=$rowscity['title'];
+			$array_fampage[$city_i]['number']=$num_items;
+		}
+	
+		
+		
+		$contents = call_user_func( $viewfam, $array_fampage, 0 , 0, '' );
 	}
 
 	if( ! defined( 'NV_IS_MODADMIN' ) and $contents != '' and $cache_file != '' )

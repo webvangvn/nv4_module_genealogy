@@ -17,10 +17,15 @@ function view_location( $array_fampage, $fid, $page, $generate_page )
 
 	$xtpl = new XTemplate( 'view_location.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file );
 	$xtpl->assign( 'LANG', $lang_module );
-	foreach( $global_array_location_city as $city_i =>  $rowscity ){
+	
+	foreach( $array_fampage as $city_i =>  $rowscity ){
 		$rowscity['link']='location';
 		$xtpl->assign( 'DATA',  $rowscity);
+		if($rowscity ['number']>0){
+			$xtpl->parse( 'main.looptr.looptd.number' );
+		}
 		$xtpl->parse( 'main.looptr.looptd' );
+		
 	}
 	$xtpl->parse( 'main.looptr' );
 	
