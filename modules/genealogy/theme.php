@@ -21,7 +21,6 @@ function view_location( $array_fampage, $fid, $page, $generate_page )
 	foreach( $array_fampage as $city_i =>  $rowscity ){
 		
 		
-		$rowscity['link']='location';
 		$xtpl->assign( 'DATA',  $rowscity);
 		if($rowscity ['number']>0){
 			$xtpl->parse( 'main.looptr.looptd.number' );
