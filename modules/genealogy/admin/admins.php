@@ -30,7 +30,7 @@ if( ! function_exists( 'nv_array_fam_admin' ) )
 		$result = $db->query( $sql );
 		while( $row = $result->fetch() )
 		{
-			$array_fam_admin[$row['userid']][$row['famid']] = $row;
+			$array_fam_admin[$row['userid']][$row['id']] = $row;
 		}
 		return $array_fam_admin;
 	}

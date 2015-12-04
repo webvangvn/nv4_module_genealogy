@@ -323,7 +323,7 @@ function viewsubfam_main( $viewfam, $array_fam )
 }
 
 
-function detail_theme( $news_contents, $array_keyword, $related_new_array, $related_array, $topic_array, $content_comment )
+function detail_theme( $news_contents, $array_keyword, $content_comment )
 {
 	global $global_config, $module_info, $lang_module, $module_name, $module_file, $module_config, $lang_global, $user_info, $admin_info, $client_info;
 
@@ -447,9 +447,9 @@ function detail_theme( $news_contents, $array_keyword, $related_new_array, $rela
 		$xtpl->parse( 'main.keywords' );
 	}
 
-	if( defined( 'NV_IS_MODADMIN' ) )
+	if( defined( 'NV_IS_GENEALOGY_MANAGER' ) )
 	{
-		$xtpl->assign( 'ADMINLINK', nv_link_edit_page( $news_contents['id'] ) . ' ' . nv_link_delete_page( $news_contents['id'], 1 ) );
+		$xtpl->assign( 'ADMINLINK', nv_link_edit_page( $news_contents['id'] ) );
 		$xtpl->parse( 'main.adminlink' );
 	}
 
@@ -525,6 +525,119 @@ function viewfam_location( $genealogy_array, $page_title )
 
 	
 
+	$xtpl->parse( 'main' );
+	return $xtpl->text( 'main' );
+}
+
+function view_detail( $viewdetail , $news_contents, $array_keyword, $content_comment )
+{
+	global $lang_module, $module_info, $module_name, $module_file, $topicalias, $module_config;
+	$xtpl = new XTemplate( $viewdetail . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file );
+	$xtpl->assign( 'LANG', $lang_module );
+	$xtpl->assign( 'DATA', $news_contents );
+	$xtpl->assign( 'ACTIVE', 'ui-genealogys-selected' );
+	if( defined( 'NV_IS_GENEALOGY_MANAGER' ) )
+	{
+		$xtpl->assign( 'ADMINLINK', nv_link_edit_page( $news_contents['id'] ) );
+		$xtpl->parse( 'main.adminlink' );
+	}
+	$xtpl->parse( 'main' );
+	return $xtpl->text( 'main' );
+}
+function nv_manager_viewdirtree_genealogy($parentid = 0)
+{
+    global $list_users, $global_config, $module_file, $module_info;
+
+    $_dirlist = $list_users[$parentid];
+    $content = "";
+    foreach ($_dirlist as $_dir)
+    {
+        if ($_dir['relationships'] == 1)
+        {
+            switch ($_dir['gender'] )
+            {
+                case 1 :
+                    $_dir['class'] = 'class="male"';
+                    break;
+                case 2 :
+                    $_dir['class'] = 'class="female"';
+                    break;
+                default :
+                    $_dir['class'] = 'class="default"';
+                    break;
+            }
+
+            $xtpl = new XTemplate("genealogy-show.tpl", NV_ROOTDIR . "/themes/" . $module_info['template'] . "/modules/" . $module_file);
+            if (isset($list_users[$_dir['id']]))
+            {
+                $_dirlist_wife = $list_users[$_dir['id']];
+                foreach ($_dirlist_wife as $_dir_wife)
+                {
+                    if ($_dir_wife['relationships'] != 1)
+                    {
+                        switch ($_dir_wife['gender'] )
+                        {
+                            case 1 :
+                                $_dir_wife['class'] = 'class="male noadd"';
+                                break;
+                            case 2 :
+                                $_dir_wife['class'] = 'class="female noadd"';
+                                break;
+                            default :
+                                $_dir_wife['class'] = 'class="default noadd"';
+                                break;
+                        }
+
+                        $xtpl->assign("WIFE", $_dir_wife);
+                        $xtpl->parse('tree.wife');
+                    }
+                }
+
+                $content2 = nv_manager_viewdirtree_genealogy($_dir['id']);
+                if (!empty($content2))
+                {
+                    $xtpl->assign("TREE_CONTENT", $content2);
+                    $xtpl->parse('tree.tree_content.loop');
+                }
+                $xtpl->parse('tree.tree_content');
+            }
+            $xtpl->assign("DIRTREE", $_dir);
+            $xtpl->parse('tree');
+            $content .= $xtpl->text('tree');
+        }
+    }
+    return $content;
+}
+function view_family( $news_contents, $list_users, $array_keyword, $content_comment )
+{
+	global $lang_module, $module_info, $module_name, $module_file, $topicalias, $module_config;
+	$xtpl = new XTemplate( 'genealogy-show.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file );
+	$xtpl->assign( 'LANG', $lang_module );
+	$xtpl->assign( 'ACTIVE', 'ui-genealogys-selected' );
+	$xtpl->assign( 'DATA', $news_contents );
+	if( defined( 'NV_IS_GENEALOGY_MANAGER' ) )
+	{
+		$xtpl->assign( 'ADMINLINK', nv_link_edit_page( $news_contents['id'] ) );
+		$xtpl->parse( 'main.adminlink' );
+	}
+	 if (!empty($list_users))
+    {
+		
+        $xtpl->assign('DATATREE', nv_manager_viewdirtree_genealogy());
+        $xtpl->parse('main.foldertree');
+		if( defined( 'NV_IS_GENEALOGY_MANAGER' )){
+			$xtpl->parse('main.contextMenu');
+		}
+    }
+    else
+    {
+		if( defined( 'NV_IS_GENEALOGY_MANAGER' )){
+			$xtpl->parse('main.create_users');
+		}else{
+			$xtpl->parse('main.no_list');
+		}
+    }
+	
 	$xtpl->parse( 'main' );
 	return $xtpl->text( 'main' );
 }

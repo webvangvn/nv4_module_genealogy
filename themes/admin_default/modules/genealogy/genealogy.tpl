@@ -179,7 +179,7 @@
 								<cite>{LANG.content_contact}:</cite>
 							</p>
 							<div class="message_body">
-								<input class="form-control" type="text" maxlength="255" value="{rowcontent.contact}" name="full_name" style="width:100%" />
+								<input class="form-control" type="text" maxlength="255" value="{rowcontent.full_name}" name="full_name" style="width:100%" />
 							</div>
 						</li>
 						<li>

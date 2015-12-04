@@ -8,7 +8,6 @@
  * @Createdate 11/10/2015 00:00
  */
 
-if( ! defined( 'NV_ADMIN' ) ) die( 'Stop!!!' );
 
 if( ! function_exists('nv_genealogy_array_fam_admin') )
 {
@@ -24,6 +23,7 @@ if( ! function_exists('nv_genealogy_array_fam_admin') )
 		$array_fam_admin = array();
 		$sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_admins ORDER BY userid ASC';
 		$result = $db->query( $sql );
+if( ! defined( 'NV_ADMIN' ) ) die( 'Stop!!!' );
 
 		while( $row = $result->fetch() )
 		{
@@ -42,7 +42,7 @@ if( ! empty( $module_info['admins'] ) )
 	$module_admin = explode( ',', $module_info['admins'] );
 	foreach( $module_admin as $userid_i )
 	{
-		if( ! isset( $array_cat_admin[$userid_i] ) )
+		if( ! isset( $array_fam_admin[$userid_i] ) )
 		{
 			$db->query( 'INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_admins (userid, fid, admin, add_content, pub_content, edit_content, del_content) VALUES (' . $userid_i . ', 0, 1, 1, 1, 1, 1)' );
 			$is_refresh = true;
@@ -100,3 +100,4 @@ if( $NV_IS_ADMIN_MODULE )
 	$allow_func[] = 'setting';
 	$allow_func[] = 'move';
 }
+
