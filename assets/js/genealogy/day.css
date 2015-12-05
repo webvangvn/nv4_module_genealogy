@@ -1,0 +1,30 @@
+	#anniversary {
+		background-image: url(http://hovanvietnam.com/calendar_day/calendar_bg.jpg);
+		background-size: 100%;
+		background-repeat:no-repeat;
+	}
+  
+  .ngay {background-color:#FFFFCC}
+  .thangduong{text-align:center;font-size:130%; font-weight:bold; color:#330033; background-color: #CCFFCC}
+  .ngayduong{text-align:center;font-size:180%;font-weight:bold;color:blue}
+  .ngayd{text-align:center;font-size:400%;font-weight:bold;color:blue}
+  .thangd{text-align:center;font-size:120%;font-weight:bold;color:blue}
+  .namd{text-align:center;font-size:180%;font-weight:bold;color:red;padding: 12px;}
+  .ngaythangduong{text-align:center;font-size:130%;font-weight:bold;color:#330033}
+  .thuduong{text-align:center;font-size:120%;font-weight:bold;color:blue}/*; text-decoration:underline*/
+  .thangnamam{text-align:center;font-size:75%;color:black}
+  .ngayam{text-align:center;font-size:180%;color:black}
+  .gioam{text-align:center;font-size:75%;color:black}
+  .canchi {vertical-align:top;    width: 100px;}
+  .normal {vertical-align:top; line-height:100%}
+  .hoangdao {font-size:75%}
+  .info{
+	  text-align: center;
+		font-size: 64%;
+		color: #FF33CC;
+		padding: 5px;
+	}
+	
+.anniversary-heading{
+	padding: 10px 5px ;
+}

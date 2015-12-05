@@ -49,11 +49,13 @@ if( isset( $array_op[1] ) )
 			->from( NV_PREFIXLANG . '_' . $module_data . '_genealogy ' )
 			->where( 'cityid= ' . $cityid . ' AND status= 1' );
 		$num_items = $db->query( $db->sql() );
-		$db->select( 'id, fid, admin_id, author, addtime, edittime, publtime, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, allowed_rating, hitstotal, hitscm, total_rating, click_rating, years' )
+		$db->select( 'id, fid, admin_id, author, addtime, edittime, publtime, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, allowed_rating, hitstotal, hitscm, total_rating, click_rating, years, number' )
 			->order( 'publtime ASC' );
 		$result = $db->query( $db->sql() );
 		while( $item = $result->fetch() )
 		{
+			$sqllistuser = $db->sqlreset()->query( 'SELECT max(lev) as maxlev FROM ' . NV_PREFIXLANG . '_'. $module_data .' WHERE gid = "' . $item['id'] . '" ORDER BY weight ASC' )->fetch();
+			$item['maxlev']=$sqllistuser['maxlev'];
 			//die($item['id']);	
 			if( $item['homeimgthumb'] == 1 )//image thumb
 			{
@@ -80,7 +82,7 @@ if( isset( $array_op[1] ) )
 			$item['width'] = $module_config[$module_name]['homewidth'];
 
 			$end_weight++;
-			$item['number']=$end_weight;
+			$item['weight']=$end_weight;
 			$item['link'] = $global_array_fam[$item['fid']]['link'] . '/' . $item['alias']  . $global_config['rewrite_exturl'];
 			$item_array[] = $item;
 		}

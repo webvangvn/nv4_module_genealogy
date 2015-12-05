@@ -1,6 +1,6 @@
 <!-- BEGIN: tree -->
 <li>
-	<span {DIRTREE.class} id="iduser_{DIRTREE.id}">{DIRTREE.full_name}</span>
+	<span {DIRTREE.class} id="iduser_{DIRTREE.id}">{DIRTREE.lev}.{DIRTREE.weight}: {DIRTREE.full_name}</span>
 	<!-- BEGIN: wife -->
 	- <span {WIFE.class} id="iduser_{WIFE.id}">{WIFE.full_name}</span>
 	<!-- END: wife -->

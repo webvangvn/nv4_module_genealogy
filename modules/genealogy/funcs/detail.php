@@ -34,7 +34,8 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 	$news_contents = $query->fetch();
 	if( $news_contents['id'] > 0 AND empty($array_op[2]) )
 	{
-
+		$sqllistuser = $db->sqlreset()->query( 'SELECT max(lev) as maxlev FROM ' . NV_PREFIXLANG . '_'. $module_data .' WHERE gid = "' . $news_contents['id'] . '" ORDER BY weight ASC' )->fetch();
+		$news_contents['maxlev']=$sqllistuser['maxlev'];
 		$show_no_image = $module_config[$module_name]['show_no_image'];
 
 		if( defined( 'NV_IS_MODADMIN' ) or ( $news_contents['status'] == 1 and $news_contents['publtime'] < NV_CURRENTTIME and ( $news_contents['exptime'] == 0 or $news_contents['exptime'] > NV_CURRENTTIME ) ) )
@@ -179,6 +180,8 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 			define( 'NV_IS_GENEALOGY_MANAGER', true);
 		}
 	}
+	
+	
 
 
 	if( $publtime == 0 )

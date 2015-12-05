@@ -19,12 +19,12 @@
 			<tbody class="dong-ho">
 				<!-- BEGIN: loop -->
 					<tr>
-						<td>{DATA.number}</td>
+						<td>{DATA.weight}</td>
 						<td><a title="{DATA.title}" href="{DATA.link}"><b>{DATA.title}</b></a></td>
 						<td>{DATA.author}</td>
 						<td>{DATA.years}</td>
-						<td></td>
-						<td></td>
+						<td>{DATA.maxlev}</td>
+						<td>{DATA.number}</td>
 					</tr>
 				<!-- END: loop -->
 				

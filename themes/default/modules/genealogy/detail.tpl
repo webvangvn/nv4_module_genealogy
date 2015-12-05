@@ -40,7 +40,7 @@
             
             <span>Email: {DETAIL.email}</span>
             <br>
-            <span>Tổng số : {DETAIL.number} đời, số thành viên trong gia phả {DETAIL.number}</span>
+            <span>Tổng số : {DETAIL.maxlev} đời, số thành viên trong gia phả {DETAIL.number}</span>
     	</div>
     	<div>
 
