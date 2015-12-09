@@ -25,7 +25,9 @@ $alias_convention=change_alias($lang_module['convention']);
 $alias_collapse=change_alias($lang_module['collapse']);
 $alias_anniversary=change_alias($lang_module['anniversary']);
 $alias_family_tree=change_alias($lang_module['family_tree']);
-
+$array_relationships = array(1 => $lang_module['u_relationships_1'], 2 => $lang_module['u_relationships_2'], 3 => $lang_module['u_relationships_3']);
+$array_gender = array(0 => $lang_module['u_gender_0'], 1 => $lang_module['u_gender_1'], 2 => $lang_module['u_gender_2']);
+$array_status = array(0 => $lang_module['u_status_0'], 1 => $lang_module['u_status_1'], 2 => $lang_module['u_status_2']);
 if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 {
 
@@ -158,6 +160,202 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 		$publtime =1;
 		$base_url_rewrite = nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] .'/' . $alias_anniversary . $global_config['rewrite_exturl'], true );
 				
+	}elseif($news_contents['id'] > 0 AND $array_op[2]==$alias_family_tree AND $count_op == 4 AND $array_op[3]!='' ){
+		$publtime =1;
+		$base_url_rewrite = nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] .'/' . $alias_family_tree . '/' . $array_op[3] . $global_config['rewrite_exturl'], true );
+		$info_users = $db->sqlreset()->query( 'SELECT * FROM ' . NV_PREFIXLANG . '_'. $module_data .' WHERE gid = "' . $news_contents['id'] . '" AND alias="' . $array_op[3] . '" ORDER BY weight ASC' )->fetch();
+
+		
+		if(int(count($info_users['id']))!=0){
+			
+			if ($info_users['image'] != "" and file_exists(NV_UPLOADS_REAL_DIR . "/" . $module_name . "/" . $info_users['image']))
+			{
+				$info_users['image'] = NV_BASE_SITEURL . NV_UPLOADS_DIR . "/" . $module_name . "/" . $info_users['image'];
+			}
+			else
+			{
+				$info_users['image'] = NV_BASE_SITEURL . 'themes/' . $module_info['template'] . '/images/' . $module_info['module_file'] . '/no-images.jpg';
+			}
+			 $array_parentid = array();
+			//Danh sách anh em
+			if ($info_users['relationships'] == 1)
+			{
+				$query = "SELECT id, parentid, weight, relationships, gender, status, alias, full_name, birthday  FROM " . NV_PREFIXLANG . "_" . $module_data . " WHERE gid=" . $info_users['gid'] . " AND parentid=" . $info_users['parentid'] . " AND id!=" . $info_users['id'] . " AND relationships NOT IN(2,3) ORDER BY weight ASC";
+				$result = $db->query($query);
+				if (int(count($result))!=0)
+				{
+					$array_parentid[0]['caption'] = $lang_module['list_parentid_0'];
+					while ($row = $result->fetch())
+					{
+						$row['link'] = $row_genealogy['link_main'] . '/' . $row['alias'];
+						if ($row['birthday'] != '0000-00-00 00:00:00')
+						{
+							preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $row['birthday'], $datetime);
+							$row['birthday'] = $datetime[3] . "/" . $datetime[2] . "/" . $datetime[1];
+						}
+						else
+						{
+							$row['birthday'] = "";
+						}
+						$row['status'] = $array_status[$row['status']];
+						$array_parentid[0]['items'][] = $row;
+					}
+				}
+			}
+
+			//Danh sách con cái
+			$query = "SELECT id, parentid, weight, relationships, gender, status, alias, full_name, birthday FROM " . NV_PREFIXLANG . "_" . $module_data . " WHERE gid=" . $info_users['gid'] . " AND (parentid=" . $info_users['id']  . " OR parentid2 =" . $info_users['id']  . ") AND relationships=1 ORDER BY weight ASC";
+
+			$result = $db->query($query);
+			if (int(count($result))!=0)
+			{
+				
+				$array_parentid[1]['caption'] = $lang_module['list_parentid_1'];
+				while ($row = $result->fetch())
+				{
+					$row['link'] = $row_genealogy['link_main'] . '/' . $row['alias'];
+					if ($row['birthday'] != '0000-00-00 00:00:00')
+					{
+						preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $row['birthday'], $datetime);
+						$row['birthday'] = $datetime[3] . "/" . $datetime[2] . "/" . $datetime[1];
+					}
+					else
+					{
+						$row['birthday'] = "";
+					}
+					$row['status'] = $array_status[$row['status']];
+					$array_parentid[1]['items'][] = $row;
+				}
+			}
+			//die(int($info_users['gender']));
+			//Danh sách vợ
+			if ($info_users['gender'] == 1)
+			{
+				$query = "SELECT id, parentid, weight, relationships, gender, status, alias, full_name, birthday FROM " . NV_PREFIXLANG . "_" . $module_data . " WHERE gid=" . $info_users['gid'] . " AND parentid=" . $info_users['id'] . " AND relationships=2 ORDER BY weight ASC";
+				$result = $db->query($query);
+				if (int(count($result))!=0)
+				{
+					$array_parentid[2]['caption'] = $lang_module['list_parentid_2'];
+					while ($row = $result->fetch())
+					{
+						$row['link'] = $row_genealogy['link_main'] . '/' . $row['alias'];
+						if ($row['birthday'] != '0000-00-00 00:00:00')
+						{
+							preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $row['birthday'], $datetime);
+							$row['birthday'] = $datetime[3] . "/" . $datetime[2] . "/" . $datetime[1];
+						}
+						else
+						{
+							$row['birthday'] = "";
+						}
+						$row['status'] = $array_status[$row['status']];
+						$array_parentid[2]['items'][] = $row;
+					}
+				}
+			}
+			$info_users['relationships'] = $array_relationships[$info_users['relationships']];
+			$info_users['gender'] = $array_gender[$info_users['gender']];
+			$info_users['status'] = $array_status[$info_users['status']];
+			if ($info_users['birthday'] != '0000-00-00 00:00:00')
+			{
+				preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $info_users['birthday'], $datetime);
+				$info_users['birthday'] = $datetime[3] . "/" . $datetime[2] . "/" . $datetime[1];
+			}
+			else
+			{
+				$info_users['birthday'] = "";
+			}
+
+			if ($info_users['status'] == 0)
+			{
+				if ($info_users['dieday'] != '0000-00-00 00:00:00')
+				{
+					preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $info_users['dieday'], $datetime);
+					$info_users['dieday'] = $datetime[3] . "/" . $datetime[2] . "/" . $datetime[1];
+				}
+				else
+				{
+					$info_users['dieday'] = "";
+				}
+			}
+			else
+			{
+				$info_users['dieday'] = "";
+				$info_users['life'] = "";
+			}
+
+			if ($info_users['life'] == 0)
+			{
+				$info_users['life'] = "";
+			}
+			$info_users['link']=nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] .'/' . $alias_family_tree . '/' . $info_users['alias'] . $global_config['rewrite_exturl'], true );
+			// Cay gia pha
+			$OrgChart = array();
+			$i = 0;
+			// Xác định cha của người này
+			if ($info_users['parentid'] > 0)
+			{
+				$info_parent = $db->query("SELECT full_name, alias FROM " . NV_PREFIXLANG . "_" . $module_data . " WHERE id=" . $info_users['parentid'])->fetch();
+				$info_parent['link']=nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] .'/' . $alias_family_tree . '/' . $info_parent['alias'] . $global_config['rewrite_exturl'], true );
+				$OrgChart[$i] = array('number' => $i, 'id' => $info_users['parentid'], 'parentid' => 0, 'full_name' => $info_parent['full_name'], 'link' =>  $info_parent['link']);
+
+				// Thông tin của người này
+				$i++;
+				$OrgChart[$i] = array('number' => $i, 'id' => $info_users['id'], 'parentid' => $info_users['parentid'], 'full_name' => $info_users['full_name'], 'link' => $info_users['link']);
+			}
+			else
+			{
+				// Thông tin của người này
+				$OrgChart[$i] = array('number' => $i, 'id' => $info_users['id'], 'parentid' => 0, 'full_name' => $info_users['full_name'], 'link' => $info_users['link']);
+			}
+
+			$array_in_parentid = array();
+			$query = "SELECT id, parentid, parentid2, weight, relationships, gender, status, alias, full_name, birthday FROM " . NV_PREFIXLANG . "_" . $module_data . " WHERE gid=" . $info_users['gid'] . " AND parentid=" . $info_users['id'] . " ORDER BY relationships ASC, weight ASC";
+			$result = $db->query($query);
+			while ($row = $result->fetch())
+			{
+				$row['link'] = nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] .'/' . $alias_family_tree . '/' . $row['alias'] . $global_config['rewrite_exturl'], true );//$row_genealogy['link_main'] . '/' . $row['alias'];
+				$array_in_parentid[$row['relationships']][] = $row;
+			}
+
+			// Xác định vợ của người này.
+			if (isset($array_in_parentid[2]))
+			{
+				foreach ($array_in_parentid[2] as $key => $value)
+				{
+					$i++;
+					$OrgChart[$i] = array('number' => $i, 'id' => $value['id'], 'parentid' => $value['parentid'], 'full_name' => $value['full_name'] . '<br><span style="color:red;">(' . $lang_module['u_relationships_2'] . ')</span>', 'link' => $value['link']);
+				}
+				foreach ($array_in_parentid[1] as $key => $value)
+				{
+					$i++;
+					$OrgChart[$i] = array('number' => $i, 'id' => $value['id'], 'parentid' => $value['parentid2'], 'full_name' => $value['full_name'], 'link' => $value['link']);
+				}
+				// Xác định các con
+			}
+			elseif (isset($array_in_parentid[3]))
+			{
+				foreach ($array_in_parentid[3] as $key => $value)
+				{
+					$i++;
+					$OrgChart[$i] = array('number' => $i, 'id' => $value['id'], 'parentid' => $value['parentid'], 'full_name' => $value['full_name'] . '<br><span style="color:red;">(' . $lang_module['u_relationships_3'] . ')</span>', 'link' => $value['link']);
+				}
+				foreach ($array_in_parentid[1] as $key => $value)
+				{
+					$i++;
+					$OrgChart[$i] = array('number' => $i, 'id' => $value['id'], 'parentid' => $value['parentid2'], 'full_name' => $value['full_name'], 'link' => $value['link']);
+				}
+			}
+			elseif (isset($array_in_parentid[1]))
+			{
+				foreach ($array_in_parentid[1] as $key => $value)
+				{
+					$i++;
+					$OrgChart[$i] = array('number' => $i, 'id' => $value['id'], 'parentid' => $info_users['id'], 'full_name' => $value['full_name'], 'link' => $value['link']);
+				}
+			}
+			// Cay gia pha
+		}
 	}elseif($news_contents['id'] > 0 AND $array_op[2]==$alias_family_tree){
 		$publtime =1;
 		$base_url_rewrite = nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] .'/' . $alias_family_tree . $global_config['rewrite_exturl'], true );
@@ -168,6 +366,7 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 		{
 			$lu=array();
 			$lu=$listu;
+			$lu['link']=nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] .'/' . $alias_family_tree . '/' . $lu['alias'] . $global_config['rewrite_exturl'], true );
 			$list_users[$listu['parentid']][$listu['id']] = $lu;
 					
 		}
@@ -296,22 +495,46 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 		$contents = detail_theme( $news_contents, $array_keyword, $content_comment );
 		
 	}elseif($news_contents['id'] > 0 AND $array_op[2]==$alias_made_up){
+		$array_mod_title[] = array(
+				'title' => $lang_module['made_up'],
+				'link' => $base_url_rewrite
+			);
 		$contents = view_detail('made_up', $news_contents, $array_keyword, $content_comment );
 		
 	}elseif($news_contents['id'] > 0 AND $array_op[2]==$alias_convention){
+		$array_mod_title[] = array(
+				'title' => $lang_module['convention'],
+				'link' => $base_url_rewrite
+			);
 		$contents = view_detail('convention', $news_contents, $array_keyword, $content_comment );
 		
 	}elseif($news_contents['id'] > 0 AND $array_op[2]==$alias_collapse){
+		$array_mod_title[] = array(
+				'title' => $lang_module['collapse'],
+				'link' => $base_url_rewrite
+			);
 		$contents = view_detail('collapse', $news_contents, $array_keyword, $content_comment );
 		
 	}elseif($news_contents['id'] > 0 AND $array_op[2]==$alias_anniversary){
+		$array_mod_title[] = array(
+				'title' => $lang_module['anniversary'],
+				'link' => $base_url_rewrite
+			);
 		$contents = view_detail('anniversary', $news_contents, $array_keyword, $content_comment );
 		
-	}elseif($news_contents['id'] > 0 AND $array_op[2]==$alias_family_tree){
-		
-		
-		$contents = view_family( $news_contents, $list_users, $array_keyword, $content_comment );
-		
+	}elseif($news_contents['id'] > 0 AND $array_op[2]==$alias_family_tree AND $count_op == 4 AND $array_op[3]!='' ){
+			$link_alias_family_tree=nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] .'/' . $alias_family_tree . $global_config['rewrite_exturl'], true );
+			$array_mod_title[] = array(
+				'title' => $lang_module['family_tree'],
+				'link' => $link_alias_family_tree
+			);
+			$contents = nv_theme_genealogy_detail( $news_contents, $info_users, $array_parentid, $OrgChart );	
+	}elseif($news_contents['id'] > 0 AND $array_op[2]==$alias_family_tree ){
+			$array_mod_title[] = array(
+				'title' => $lang_module['family_tree'],
+				'link' => $base_url_rewrite
+			);
+			$contents = view_family( $news_contents, $list_users, $array_keyword, $content_comment );	
 	}
 	$id_profile_googleplus = $news_contents['gid'];
 	$page_title = $news_contents['title'];

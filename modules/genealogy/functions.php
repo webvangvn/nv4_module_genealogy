@@ -152,6 +152,14 @@ if( ! empty( $array_op ) and $op == 'main' )
 				$op = 'detail';
 			}
 		}
+		elseif( $count_op == 4 )
+		{
+			$alias_url = $array_op[1];
+			if(  $alias_url != '' AND $array_op[2]!='' AND $array_op[3]!='') 
+			{
+				$op = 'detail';
+			}
+		}
 
 	}
 }

@@ -1,8 +1,8 @@
 <!-- BEGIN: tree -->
 <li>
-	<span {DIRTREE.class} id="iduser_{DIRTREE.id}">{DIRTREE.lev}.{DIRTREE.weight}: {DIRTREE.full_name}</span>
+	<span {DIRTREE.class} id="iduser_{DIRTREE.id}"><a href="{DIRTREE.link}">{DIRTREE.lev}.{DIRTREE.weight}: {DIRTREE.full_name}</a></span>
 	<!-- BEGIN: wife -->
-	- <span {WIFE.class} id="iduser_{WIFE.id}">{WIFE.full_name}</span>
+	- <span {WIFE.class} id="iduser_{WIFE.id}"><a href="{WIFE.link}">{WIFE.full_name}</a></span>
 	<!-- END: wife -->
 	<!-- BEGIN: tree_content -->
 	<ul>

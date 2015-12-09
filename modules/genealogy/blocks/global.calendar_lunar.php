@@ -58,7 +58,7 @@ if( ! nv_function_exists( 'nv_genealogy_calendar' ) )
 			if ($yy == 0) $yy = $date_array['year'];
 			$al = convertSolar2Lunar($dd, $mm, $yy, 7.0);
 
-			$sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $site_mods[$module]['module_data'] . ' WHERE status=2 AND  anniversary_mont = '.$al[1].' ORDER BY rand() DESC';
+			$sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $site_mods[$module]['module_data'] . ' WHERE status IN(1,2) AND  anniversary_mont = '.$al[1].' ORDER BY rand() DESC';
 			if( ( $query = $db->query( $sql ) ) !== false )
 			{
 				while ( $row = $query->fetch() )
@@ -70,25 +70,23 @@ if( ! nv_function_exists( 'nv_genealogy_calendar' ) )
 			}
 		}
 
+		if( file_exists( NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/genealogy/block.calendar_lunar.tpl' ) )
+		{
+			$block_theme = $global_config['module_theme'];
+		}
+		elseif( file_exists( NV_ROOTDIR . '/themes/' . $global_config['site_theme'] . '/modules/genealogy/block.calendar_lunar.tpl' ) )
+		{
+			$block_theme = $global_config['site_theme'];
+		}
+		else
+		{
+			$block_theme = 'default';
+		}
+		$xtpl = new XTemplate( 'block.calendar_lunar.tpl', NV_ROOTDIR . '/themes/' . $block_theme . '/modules/genealogy' );
+		$xtpl->assign( 'LINK', $link );
+		$xtpl->assign( 'LANG', $lang_block );
 		if( $is_show )
 		{
-			if( file_exists( NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/genealogy/block.calendar_lunar.tpl' ) )
-			{
-				$block_theme = $global_config['module_theme'];
-			}
-			elseif( file_exists( NV_ROOTDIR . '/themes/' . $global_config['site_theme'] . '/modules/genealogy/block.calendar_lunar.tpl' ) )
-			{
-				$block_theme = $global_config['site_theme'];
-			}
-			else
-			{
-				$block_theme = 'default';
-			}
-
-			$xtpl = new XTemplate( 'block.calendar_lunar.tpl', NV_ROOTDIR . '/themes/' . $block_theme . '/modules/genealogy' );
-			$xtpl->assign( 'LINK', $link );
-			$xtpl->assign( 'LANG', $lang_block );
-			$xtpl->assign( 'MONT', $al[1] );	
 			$i=0;
 			$n=count($anniversary);
 			foreach($anniversary as $anniversary_i){
@@ -100,10 +98,10 @@ if( ! nv_function_exists( 'nv_genealogy_calendar' ) )
 				$xtpl->parse( 'main.anniversary' );
 				$xtpl->parse( 'main.anniversary_list' );
 			}
-			
-			$xtpl->parse( 'main' );
-			return $xtpl->text( 'main' );
 		}
+		$xtpl->parse( 'main' );
+		return $xtpl->text( 'main' );
+	
 
 		return '';
 	}

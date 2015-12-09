@@ -841,3 +841,97 @@ function search_result_theme( $key, $numRecord, $per_pages, $page, $array_conten
 	$xtpl->parse( 'results' );
 	return $xtpl->text( 'results' );
 }
+
+
+function nv_theme_genealogy_detail( $row_genealogy, $row_detail, $array_parentid, $OrgChart )
+{
+	global $global_config, $module_name, $module_file, $lang_module, $my_head, $module_info, $op;
+
+	if( ! defined( 'SHADOWBOX' ) )
+	{
+		$my_head .= "<link rel=\"Stylesheet\" href=\"" . NV_BASE_SITEURL . "js/shadowbox/shadowbox.css\" />\n";
+		$my_head .= "<script type=\"text/javascript\" src=\"" . NV_BASE_SITEURL . "js/shadowbox/shadowbox.js\"></script>\n";
+		$my_head .= "<script type=\"text/javascript\">Shadowbox.init({ handleOversize: \"drag\" });</script>";
+		define( 'SHADOWBOX', true );
+	}
+	$xtpl = new XTemplate( "gdetail.tpl", NV_ROOTDIR . "/themes/" . $module_info['template'] . "/modules/" . $module_file );
+	$xtpl->assign( 'LANG', $lang_module );
+	$xtpl->assign( 'GENEALOGY', $row_genealogy );
+	$xtpl->assign( 'ACTIVE', 'ui-genealogys-selected' );
+	if(int(count($row_detail['id']))!=0){
+		$array_key = array(
+			'full_name',
+			'gender',
+			'status',
+			'code',
+			'name1',
+			'name2',
+			'birthday',
+			'dieday',
+			'life',
+			'burial' );
+		$i = 0;
+
+		$lang_module['u_life'] = ( $row_detail['life'] >= 50 ) ? $lang_module['u_life_ht'] : $lang_module['u_life_hd'];
+
+		foreach( $array_key as $key )
+		{
+			if( $row_detail[$key] != "" )
+			{
+				$i++;
+				$dataloop = array(
+					'class' => ( $i % 2 == 0 ) ? 'class="second"' : '',
+					'lang' => $lang_module['u_' . $key],
+					'value' => $row_detail[$key] );
+				$xtpl->assign( 'DATALOOP', $dataloop );
+				$xtpl->parse( 'main.info.loop' );
+			}
+		}
+		$xtpl->assign( 'DATA', $row_detail );
+
+		foreach( $array_parentid as $array_parentid_i )
+		{
+			$xtpl->assign( 'PARENTIDCAPTION', $array_parentid_i['caption'] );
+			$items = $array_parentid_i['items'];
+			$number = 1;
+			foreach( $items as $item )
+			{
+				$item['number'] = $number++;
+				$item['class'] = ( $number % 2 == 0 ) ? 'class="second"' : '';
+
+				$xtpl->assign( 'DATALOOP', $item );
+				$xtpl->parse( 'main.info.parentid.loop2' );
+			}
+			$xtpl->parse( 'main.info.parentid' );
+		}
+		if( ! empty( $row_detail['content'] ) )
+		{
+			$xtpl->parse( 'main.info.content' );
+		}
+
+		if( ! empty( $OrgChart ) )
+		{
+			$xtpl->assign( 'DATACHARTROWS', count( $OrgChart ) );
+			foreach( $OrgChart as $item )
+			{
+				if( $item['id'] == $row_detail['id'] )
+				{
+					$item['full_name'] = '<span style="color:red; font-weight: 700">' . $item['full_name'] . '</span>';
+				}
+				$xtpl->assign( 'DATACHART', $item );
+				if( $item['number'] > 0 )
+				{
+					$xtpl->parse( 'main.info.orgchart.looporgchart.looporgchart2' );
+				}
+				$xtpl->parse( 'main.info.orgchart.looporgchart' );
+			}
+			$xtpl->parse( 'main.info.orgchart' );
+		}
+		$xtpl->parse( 'main.info' );
+	}else{
+		$xtpl->parse( 'main.not_info' );
+	}
+	$xtpl->parse( 'main' );
+	return $xtpl->text( 'main' );
+}
+
