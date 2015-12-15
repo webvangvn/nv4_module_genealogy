@@ -93,94 +93,9 @@
 	//<![CDATA[
 	$(document).ready(function() {
 		$("#foldertree").treeview();
-		$('#foldertree span').contextMenu('menu_genealogy_show', {
-			menuStyle:{width:'120px'}, 
-			onShowMenu : function(e, menu) {
-				var idclass = $(e.target).attr('class');
-				if(idclass.search('noadd')>0){
-					$('#news1,#news2,#news3', menu).remove();
-				}
-				if(idclass== 'female' || idclass== 'female hover') {
-					$('#news2', menu).remove();
-				}
-				else if(idclass== 'male' || idclass== 'male hover') {
-					$('#news3', menu).remove();
-				}
-				return menu;
-			},
-			bindings : {
-				'news1' : function(t) {
-					var r_split = t.id.split("_");
-					$("div#create_genealogy_users").dialog({
-						autoOpen : false,
-						width : 800,
-						height : 500,
-						modal : true,
-						position : "center"
-					}).dialog("open");
-					
-					$("#modalIFrame").attr('src', nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=users&gid={DATA.id}&relationships=1&parentid=' + r_split[1]);
-				},
-				'news2' : function(t) {
-					var r_split = t.id.split("_");
-					$("div#create_genealogy_users").dialog({
-						autoOpen : false,
-						width : 800,
-						height : 500,
-						modal : true,
-						position : "center"
-					}).dialog("open");
-					$("#modalIFrame").attr('src', nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=users&gid={DATA.id}&relationships=2&parentid=' + r_split[1]);
-				},
-				'news3' : function(t) {
-					var r_split = t.id.split("_");
-					$("div#create_genealogy_users").dialog({
-						autoOpen : false,
-						width : 800,
-						height : 500,
-						modal : true,
-						position : "center"
-					}).dialog("open");
-					$("#modalIFrame").attr('src', nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=users&gid={DATA.id}&relationships=3&parentid=' + r_split[1]);
-				},
-				'edit' : function(t) {
-					var r_split = t.id.split("_");
-					$("div#create_genealogy_users").dialog({
-						autoOpen : false,
-						width : 800,
-						height : 500,
-						modal : true,
-						position : "center"
-					}).dialog("open");
-					
-					$("#modalIFrame").attr('src', nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=users&id=' + r_split[1]);
-				},
-				'delete' : function(t) {
-					if(confirm('Bạn có chắc chọn xóa thành viên, xóa thành viên này hệ thống sẽ xóa tất cả các thành viên là vợ, con, cháu ..')) {
-						var r_split = t.id.split("_");
-						window.location = nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=shows&&gid={DATA.id}&deleteid=' + r_split[1];
-					}
-				}
-			}
-		});
-	});
-	//]]>
-</script>
-<!-- BEGIN: create_users -->
-<script type="text/javascript">
-	//<![CDATA[
-	$(document).ready(function() {
 		
-		$("div#create_genealogy_users").dialog({
-			autoOpen : false,
-			width : 800,
-			height : 500,
-			modal : true,
-			position : "center"
-		}).dialog("open");
-		$("#modalIFrame").attr('src', nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=users&gid={DATA.id}&parentid=0');
 	});
 	//]]>
 </script>
-<!-- END: create_users -->
+
 <!-- END: main -->

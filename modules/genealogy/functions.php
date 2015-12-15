@@ -24,6 +24,14 @@ if ($checklocation > 0) {
 	$sql = 'SELECT city_id, title, alias, type FROM ' . $tablelocation . '_city WHERE status=1 ORDER BY weight ASC';
 	
 	$global_array_location_city = nv_db_cache( $sql, 'city_id', 'location' );
+	
+	$sql = 'SELECT district_id, city_id, title, alias, type FROM ' . $tablelocation . '_district WHERE status=1 ORDER BY weight ASC';
+	
+	$global_array_location_district = nv_db_cache( $sql, 'district_id', 'location' );
+	
+	$sql = 'SELECT ward_id, district_id, city_id, title, alias, type FROM ' . $tablelocation . '_ward WHERE status=1 ORDER BY weight ASC';
+	
+	$global_array_location_ward = nv_db_cache( $sql, 'ward_id', 'location' );
 }
 
 if( ! in_array( $op, array( 'viewfam', 'detail' ) ) )
@@ -149,7 +157,11 @@ if( ! empty( $array_op ) and $op == 'main' )
 			
 			if(  $alias_url != '' AND $array_op[2]!='') 
 			{
-				$op = 'detail';
+				if($array_op[2]=='Manager'){
+					$op = 'manager';
+				}else{
+					$op = 'detail';
+				}
 			}
 		}
 		elseif( $count_op == 4 )

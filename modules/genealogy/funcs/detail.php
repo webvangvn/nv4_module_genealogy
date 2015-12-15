@@ -44,6 +44,8 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 		{
 			if( defined( 'NV_IS_ADMIN' )){
 				define( 'NV_IS_GENEALOGY_MANAGER', true);
+			}elseif($user_info['userid'] == $news_contents['admin_id']){
+				define( 'NV_IS_GENEALOGY_MANAGER', true);
 			}
 			$time_set = $nv_Request->get_int( $module_data . '_' . $op . '_' . $news_contents['id'], 'session' );
 			if( empty( $time_set ) )
@@ -187,7 +189,7 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 					$array_parentid[0]['caption'] = $lang_module['list_parentid_0'];
 					while ($row = $result->fetch())
 					{
-						$row['link'] = $row_genealogy['link_main'] . '/' . $row['alias'];
+						$row['link'] = nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] . '/' . $alias_family_tree . '/' . $row['alias'] . $global_config['rewrite_exturl'], true );//$row_genealogy['link_main'] . '/' . $row['alias'];
 						if ($row['birthday'] != '0000-00-00 00:00:00')
 						{
 							preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $row['birthday'], $datetime);
@@ -213,7 +215,7 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 				$array_parentid[1]['caption'] = $lang_module['list_parentid_1'];
 				while ($row = $result->fetch())
 				{
-					$row['link'] = $row_genealogy['link_main'] . '/' . $row['alias'];
+					$row['link'] =  nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] . '/' . $alias_family_tree . '/' . $row['alias'] . $global_config['rewrite_exturl'], true );//$row_genealogy['link_main'] . '/' . $row['alias'];
 					if ($row['birthday'] != '0000-00-00 00:00:00')
 					{
 						preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $row['birthday'], $datetime);
@@ -238,7 +240,7 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 					$array_parentid[2]['caption'] = $lang_module['list_parentid_2'];
 					while ($row = $result->fetch())
 					{
-						$row['link'] = $row_genealogy['link_main'] . '/' . $row['alias'];
+						$row['link'] =  nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] . '/' . $alias_family_tree . '/' . $row['alias'] . $global_config['rewrite_exturl'], true );//$row_genealogy['link_main'] . '/' . $row['alias'];
 						if ($row['birthday'] != '0000-00-00 00:00:00')
 						{
 							preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $row['birthday'], $datetime);
@@ -373,11 +375,13 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 		$list_genealogy=$db->query("SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_genealogy WHERE id=" . $news_contents['id'])->fetch();
 		
 	//die("SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_genealogy WHERE id=" . $list_genealogy['admin_id']);
+	
 		if( defined( 'NV_IS_ADMIN' )){
 				define( 'NV_IS_GENEALOGY_MANAGER', true);
 		}elseif($user_info['userid'] == $list_genealogy['admin_id']){
 			define( 'NV_IS_GENEALOGY_MANAGER', true);
 		}
+
 	}
 	
 	
@@ -492,6 +496,7 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 	
 	if( $news_contents['id'] > 0 AND empty($array_op[2]) )
 	{
+		
 		$contents = detail_theme( $news_contents, $array_keyword, $content_comment );
 		
 	}elseif($news_contents['id'] > 0 AND $array_op[2]==$alias_made_up){

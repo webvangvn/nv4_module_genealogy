@@ -135,7 +135,7 @@ if (defined('NV_IS_USER'))
             }
             $post['actanniversary'] = ($post['status'] == 0 and $post['dieday_data'] != '0000-00-00 00:00:00') ? 1 : 0;
 			$_sql = "INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "
-						( gid, parentid, parentid2, weight, lev, relationships, gender, status, anniversary, actanniversary, 
+						( gid, parentid, parentid2, weight, lev, relationships, gender, status, anniversary_day, anniversary_mont, actanniversary, 
 				alias,full_name, code, name1, name2, 
 				birthday, dieday, life, burial, content, image, userid, add_time, edit_time) VALUES
 						 (" .  intval($post['gid'])  . ",
@@ -146,7 +146,8 @@ if (defined('NV_IS_USER'))
 						 " .  intval($post['relationships'])  . ",
 						 " .  intval($post['gender'])  . ",
 						 " .  intval($post['status'])  . ",
-						 " . $db->quote($post['anniversary'])  . ",
+						 " . $db->quote($post['anniversary_day'])  . ",
+						 " . $db->quote($post['anniversary_mont'])  . ",
 						 " . $db->quote($post['actanniversary'])  . ",
 						 '',
 						 " . $db->quote($post['full_name'])  . ",
@@ -179,7 +180,7 @@ if (defined('NV_IS_USER'))
                 nv_fix_genealogy_user($post['parentid']);
                 nv_del_moduleCache($module_name);
 				$alias_family_tree=change_alias($lang_module['family_tree']);
-				$base_url_rewrite=nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$post_gid['fid']]['alias'] . '/' . $post_gid['alias'] . '/'. $alias_family_tree . $global_config['rewrite_exturl'], true );
+				$base_url_rewrite=nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$post_gid['fid']]['alias'] . '/' . $post_gid['alias'] . '/Manager' . $global_config['rewrite_exturl'], true );
                 echo '<script type="text/javascript">
 					parent.location="' . $base_url_rewrite . '";
     				</script>';
@@ -189,7 +190,7 @@ if (defined('NV_IS_USER'))
         else
         {
             $post['actanniversary'] = ($post['status'] == $post_old['status'] and $post['status'] == 0) ? 0 : $post_old['actanniversary'];
-            $post['anniversary'] = ($post['dieday_data'] == '0000-00-00 00:00:00') ? $post['anniversary'] : '';
+            //$post['anniversary'] = ($post['dieday_data'] == '0000-00-00 00:00:00') ? $post['anniversary'] : '';
             $query = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . " SET parentid2=" . $post['parentid2'] . ", weight=" . $post['weight'] . ", relationships =  " . $post['relationships'] . ", gender=" . $post['gender'] . ", status= " . $post['status'] . ", actanniversary= " . $db->quote($post['actanniversary']) . ", 
 			full_name=" . $db->quote($post['full_name']) . ", code=" . $db->quote($post['code']) . ", name1=" . $db->quote($post['name1']) . ", name2=" . $db->quote($post['name2']) . ", 
 			birthday='" . $post['birthday_data'] . "', dieday='" . $post['dieday_data'] . "', life='" . $post['life'] . "', burial=" . $db->quote($post['burial']) . ", content=" . $db->quote($post['content']) . ",
@@ -208,7 +209,7 @@ if (defined('NV_IS_USER'))
                 $op2 = ($post['opanniversary']) ? "anniversary" : "shows";
 
                 $alias_family_tree=change_alias($lang_module['family_tree']);
-				$base_url_rewrite=nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$post_gid['fid']]['alias'] . '/' . $post_gid['alias'] . '/'. $alias_family_tree . $global_config['rewrite_exturl'], true );
+				$base_url_rewrite=nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$post_gid['fid']]['alias'] . '/' . $post_gid['alias'] . '/Manager' . $global_config['rewrite_exturl'], true );
                 echo '<script type="text/javascript">
 					parent.location="' . $base_url_rewrite . '";
     				</script>';

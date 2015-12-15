@@ -223,3 +223,5 @@ $lang_module['search_result_keyword'] = "theo từ khóa";
 $lang_module['search_noresult'] = "Không tìm thấy dữ liu nào";
 $lang_module['list_level'] = "Danh sách đời thứ : %s ";
 
+
+$lang_module['genealogy_edit'] = 'Sửa gia phả';
