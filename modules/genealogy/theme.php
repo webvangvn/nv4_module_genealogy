@@ -610,9 +610,9 @@ function nv_manager_viewdirtree_genealogy($parentid = 0, $tpl)
     }
     return $content;
 }
-function view_family( $news_contents, $list_users, $array_keyword, $content_comment )
+function view_family( $news_contents, $list_users, $array_keyword, $content_comment, $OrgChart )
 {
-	global $lang_module, $module_info, $module_name, $module_file, $topicalias, $module_config, $global_array_fam;
+	global $lang_module, $module_info, $module_name, $module_file, $topicalias, $module_config, $global_array_fam, $global_config;
 	$xtpl = new XTemplate( 'genealogy-show.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file );
 	$xtpl->assign( 'LANG', $lang_module );
 	$xtpl->assign( 'ACTIVE', 'ui-genealogys-selected' );
@@ -623,23 +623,24 @@ function view_family( $news_contents, $list_users, $array_keyword, $content_comm
 		$xtpl->assign( 'ADMINLINK', "<a  href=\"" . $link_manager . "\"><em class=\"fa fa-edit margin-right\"></em> " . $lang_module['manager'] . "</a>");
 		$xtpl->parse( 'main.adminlink' );
 	}
-	 if (!empty($list_users))
-    {
-		
-        $xtpl->assign('DATATREE', nv_manager_viewdirtree_genealogy(0,'genealogy-show'));
-        $xtpl->parse('main.foldertree');
-		if( defined( 'NV_IS_GENEALOGY_MANAGER' )){
-			$xtpl->parse('main.contextMenu');
+	 if( ! empty( $OrgChart ) )
+		{
+			$xtpl->assign( 'DATACHARTROWS', count( $OrgChart ) );
+			foreach( $OrgChart as $item )
+			{
+				if( $item['id'] == $list_users['id'] )
+				{
+					$item['full_name'] = '<span style="color:red; font-weight: 700">' . $item['full_name'] . '</span>';
+				}
+				$xtpl->assign( 'DATACHART', $item );
+				if( $item['number'] > 0 )
+				{
+					$xtpl->parse( 'main.orgchart.looporgchart.looporgchart2' );
+				}
+				$xtpl->parse( 'main.orgchart.looporgchart' );
+			}
+			$xtpl->parse( 'main.orgchart' );
 		}
-    }
-    else
-    {
-		if( defined( 'NV_IS_GENEALOGY_MANAGER' )){
-			$xtpl->parse('main.create_users');
-		}else{
-			$xtpl->parse('main.no_list');
-		}
-    }
 	
 	$xtpl->parse( 'main' );
 	return $xtpl->text( 'main' );
@@ -891,19 +892,22 @@ function nv_theme_genealogy_detail( $row_genealogy, $row_detail, $array_parentid
 			}
 		}
 		$xtpl->assign( 'DATA', $row_detail );
-
+		
 		foreach( $array_parentid as $array_parentid_i )
 		{
 			$xtpl->assign( 'PARENTIDCAPTION', $array_parentid_i['caption'] );
-			$items = $array_parentid_i['items'];
-			$number = 1;
-			foreach( $items as $item )
+			if (isset($array_parentid_i['items']))
 			{
-				$item['number'] = $number++;
-				$item['class'] = ( $number % 2 == 0 ) ? 'class="second"' : '';
+				$items = $array_parentid_i['items'];
+				$number = 1;
+				foreach( $items as $item )
+				{
+					$item['number'] = $number++;
+					$item['class'] = ( $number % 2 == 0 ) ? 'class="second"' : '';
 
-				$xtpl->assign( 'DATALOOP', $item );
-				$xtpl->parse( 'main.info.parentid.loop2' );
+					$xtpl->assign( 'DATALOOP', $item );
+					$xtpl->parse( 'main.info.parentid.loop2' );
+				}
 			}
 			$xtpl->parse( 'main.info.parentid' );
 		}
@@ -985,7 +989,7 @@ function manager_theme($news_contents, $list_users, $array_keyword, $content_com
     $array_who_view = array(0 => $lang_module['who_view0'], 1 => $lang_module['who_view1'], 2 => $lang_module['who_view2']);
     foreach ($array_who_view as $key => $value)
     {
-        $row = array('id' => $key, 'title' => $value, 'selected' => ($key == $post['who_view']) ? ' selected="selected"' : '');
+        $row = array('id' => $key, 'title' => $value, 'selected' =>  '');
 
         $xtpl->assign('WHO_VIEW', $row);
         $xtpl->parse('main.who_view');

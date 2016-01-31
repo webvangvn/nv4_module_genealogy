@@ -145,7 +145,7 @@
 					<tbody {DATALOOP.class}>
 						<tr>
 							<td align="right">{DATALOOP.number}</td>
-							<td><a href="{DATALOOP.link}">{DATALOOP.full_name}</a></td>
+							<td><a href="{DATALOOP.link}">{DATALOOP.mogul} {DATALOOP.full_name}</a></td>
 							<td> {DATALOOP.birthday}</td>
 							<td> {DATALOOP.status}</td>
 						</tr>

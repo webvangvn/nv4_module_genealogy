@@ -322,8 +322,8 @@ if( ! nv_function_exists( 'getSunLongitude' ) )
 		$L = $L0 + $DL; // true longitude, degree
 		//echo "\ndr = $dr, M = $M, T = $T, DL = $DL, L = $L, L0 = $L0\n";
 		// obtain apparent longitude by correcting for nutation and aberration
-		$omega = 125.04 - 1934.136 * T;
-		$L = $L - 0.00569 - 0.00478 * Math.sin($omega * $dr);
+		$omega = 125.04 - 1934.136 * $T;
+		$L = $L - 0.00569 - 0.00478 * sin($omega * $dr);
 		$L = $L*$dr;
 		$L = $L - M_PI*2*(INT($L/(M_PI*2))); // Normalize to (0, 2*PI)
 		return INT($L/M_PI*6);

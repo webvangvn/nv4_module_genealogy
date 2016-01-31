@@ -61,6 +61,7 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 				$post['contenttext'] = $post['content'];
 				$post['years'] = $nv_Request->get_string('years', 'post', '', 1);
 				$post['author'] = $nv_Request->get_string('author', 'post', '', 1);
+				$post['patriarch'] = $nv_Request->get_string('patriarch', 'post', '', 1);
 				$post['full_name'] = $nv_Request->get_string('full_name', 'post', '', 1);
 				$post['telephone'] = $nv_Request->get_string('telephone', 'post', '', 1);
 				$post['email'] = $nv_Request->get_string('email', 'post', '', 1);
@@ -81,6 +82,8 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 					if( ! defined( 'NV_IS_SPADMIN' ) and intval( $post['publtime'] ) < intval( $post_old['addtime'] ) )
 					{
 						$post['publtime'] = $post_old['addtime'];
+					}else{
+						$post['publtime'] = $post_old['publtime'];
 					}
 
 					if( $post['status'] == 1 and $post['publtime'] > NV_CURRENTTIME )
@@ -91,6 +94,7 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 							 fid=" . intval( $post['fid'] ) . ",
 							 listfid=" . $db->quote(  $post['listfid']) . ",
 							 author=" . $db->quote(  $post['author']) . ",
+							 patriarch=" . $db->quote(  $post['patriarch']) . ",
 							 status=" . intval( $post['status'] ) . ",
 							 publtime=" . intval( $post['publtime'] ) . ",
 							 exptime=" . intval( $post['exptime'] ) . ",
@@ -114,7 +118,26 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 						}else{
 							$user_post= $user_info['userid'];
 						}
-
+						$sql =  "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_" . $post['fid']. " SET
+							 fid=" . intval( $post['fid'] ) . ",
+							 listfid=" . $db->quote(  $post['listfid']) . ",
+							 author=" . $db->quote(  $post['author']) . ",
+							 patriarch=" . $db->quote(  $post['patriarch']) . ",
+							 status=" . intval( $post['status'] ) . ",
+							 publtime=" . intval( $post['publtime'] ) . ",
+							 exptime=" . intval( $post['exptime'] ) . ",
+							 title=" . $db->quote(  $post['title']) . ",
+							 alias=" . $db->quote(  $post['alias']) . ",
+							 cityid=" . intval( $post['cityid'] ) . ",
+							 districtid=" . intval( $post['districtid'] ) . ",
+							 wardid=" . intval( $post['wardid'] ) . ",
+							 years=" . $db->quote(  $post['years']) . ",
+							 full_name=" . $db->quote(  $post['full_name']) . ",
+							 telephone=" . $db->quote(  $post['telephone']) . ",
+							 email=" . $db->quote(  $post['email']) . ",
+							 edittime=" . NV_CURRENTTIME . "
+						WHERE id =" . $news_contents['id'];
+						$db->exec( $sql );
 						nv_insert_logs( NV_LANG_DATA, $module_name, $lang_module['genealogy_edit'], $post['title'], $user_post );
 						
 						

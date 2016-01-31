@@ -11,7 +11,7 @@
 			<thead class="list-gia-pha main-title">
 				<tr><th class="col-md-1">STT</th>
 				<th class="col-md-5">Dòng họ</th>
-				<th class="col-md-2">Người biên soạn</th>
+				<th class="col-md-2">Tộc trưởng</th>
 				<th class="col-md-2">Năm biên soạn</th>
 				<th class="col-md-1">Số đời</th>
 				<th class="col-md-1">Số Người</th>
@@ -21,7 +21,7 @@
 					<tr>
 						<td>{DATA.weight}</td>
 						<td><a title="{DATA.title}" href="{DATA.link}"><b>{DATA.title}</b></a></td>
-						<td>{DATA.author}</td>
+						<td>{DATA.patriarch}</td>
 						<td>{DATA.years}</td>
 						<td>{DATA.maxlev}</td>
 						<td>{DATA.number}</td>

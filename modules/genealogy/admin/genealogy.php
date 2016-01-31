@@ -90,6 +90,7 @@ $rowcontent = array(
 	'listfid' => $fid . ',' . $parentid,
 	'admin_id' => $admin_id,
 	'author' => '',
+	'patriarch' => '',
 	'addtime' => NV_CURRENTTIME,
 	'edittime' => NV_CURRENTTIME,
 	'status' => 0,
@@ -312,6 +313,7 @@ if( $nv_Request->get_int( 'save', 'post' ) == 1 )
 
 	
 	$rowcontent['author'] = $nv_Request->get_title( 'author', 'post', '', 1 );
+	$rowcontent['patriarch'] = $nv_Request->get_title( 'patriarch', 'post', '', 1 );
 	$rowcontent['years'] = $nv_Request->get_title( 'years', 'post', '', 1 );
 	$rowcontent['full_name'] = $nv_Request->get_title( 'full_name', 'post', '', 1 );
 	$rowcontent['telephone'] = $nv_Request->get_title( 'telephone', 'post', '', 1 );
@@ -506,11 +508,12 @@ if( $nv_Request->get_int( 'save', 'post' ) == 1 )
 				$rowcontent['status'] = 2;
 			}
 			$sql = 'INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_genealogy
-				(fid, listfid, admin_id, author, addtime, edittime, status, publtime, exptime, archive, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, inhome, allowed_comm, allowed_rating, hitstotal, hitscm, total_rating, click_rating, cityid, districtid, wardid, years, full_name, telephone, email) VALUES
+				(fid, listfid, admin_id, author, patriarch, addtime, edittime, status, publtime, exptime, archive, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, inhome, allowed_comm, allowed_rating, hitstotal, hitscm, total_rating, click_rating, cityid, districtid, wardid, years, full_name, telephone, email) VALUES
 				 (' . intval( $rowcontent['fid'] ) . ',
 				 :listfid,
 				 ' . intval( $rowcontent['admin_id'] ) . ',
 				 :author,
+				 :patriarch,
 				 ' . intval( $rowcontent['addtime'] ) . ',
 				 ' . intval( $rowcontent['edittime'] ) . ',
 				 ' . intval( $rowcontent['status'] ) . ',
@@ -543,6 +546,7 @@ if( $nv_Request->get_int( 'save', 'post' ) == 1 )
 			$data_insert = array();
 			$data_insert['listfid'] = $rowcontent['listfid'];
 			$data_insert['author'] = $rowcontent['author'];
+			$data_insert['patriarch'] = $rowcontent['patriarch'];
 			$data_insert['title'] = $rowcontent['title'];
 			$data_insert['alias'] = $rowcontent['alias'];
 			$data_insert['hometext'] = $rowcontent['hometext'];
@@ -622,6 +626,7 @@ if( $nv_Request->get_int( 'save', 'post' ) == 1 )
 					 fid=' . intval( $rowcontent['fid'] ) . ',
 					 listfid=:listfid,
 					 author=:author,
+					 patriarch=:patriarch,
 					 status=' . intval( $rowcontent['status'] ) . ',
 					 publtime=' . intval( $rowcontent['publtime'] ) . ',
 					 exptime=' . intval( $rowcontent['exptime'] ) . ',
@@ -647,6 +652,7 @@ if( $nv_Request->get_int( 'save', 'post' ) == 1 )
 
 			$sth->bindParam( ':listfid', $rowcontent['listfid'], PDO::PARAM_STR );
 			$sth->bindParam( ':author', $rowcontent['author'], PDO::PARAM_STR );
+			$sth->bindParam( ':patriarch', $rowcontent['patriarch'], PDO::PARAM_STR );
 			$sth->bindParam( ':title', $rowcontent['title'], PDO::PARAM_STR );
 			$sth->bindParam( ':alias', $rowcontent['alias'], PDO::PARAM_STR );
 			$sth->bindParam( ':hometext', $rowcontent['hometext'], PDO::PARAM_STR, strlen( $rowcontent['hometext'] ) );

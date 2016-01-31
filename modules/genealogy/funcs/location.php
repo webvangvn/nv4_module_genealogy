@@ -49,7 +49,7 @@ if( isset( $array_op[1] ) )
 			->from( NV_PREFIXLANG . '_' . $module_data . '_genealogy ' )
 			->where( 'cityid= ' . $cityid . ' AND status= 1' );
 		$num_items = $db->query( $db->sql() );
-		$db->select( 'id, fid, admin_id, author, addtime, edittime, publtime, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, allowed_rating, hitstotal, hitscm, total_rating, click_rating, years, number' )
+		$db->select( 'id, fid, admin_id, author, patriarch, addtime, edittime, publtime, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, allowed_rating, hitstotal, hitscm, total_rating, click_rating, years, number' )
 			->order( 'publtime ASC' );
 		$result = $db->query( $db->sql() );
 		while( $item = $result->fetch() )

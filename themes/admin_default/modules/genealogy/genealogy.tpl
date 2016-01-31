@@ -176,6 +176,14 @@
 						</li>
 						<li>
 							<p class="message_head">
+								<cite>{LANG.content_patriarch}:</cite>
+							</p>
+							<div class="message_body">
+								<input class="form-control" type="text" maxlength="255" value="{rowcontent.patriarch}" name="patriarch" style="width:100%" />
+							</div>
+						</li>
+						<li>
+							<p class="message_head">
 								<cite>{LANG.content_contact}:</cite>
 							</p>
 							<div class="message_body">

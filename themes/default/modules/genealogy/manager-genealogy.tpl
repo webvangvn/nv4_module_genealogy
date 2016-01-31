@@ -134,6 +134,14 @@
 								</td>
 							</tr>
 						</tbody >
+						<tbody>
+							<tr>
+								<td>Tộc trưởng:</span></td>
+								<td>
+								<input name="patriarch" value="{DATA.patriarch}" maxlength="255" style="width: 450px;" type="text">
+								</td>
+							</tr>
+						</tbody >
 						<tbody class="second">
 							<tr>
 								<td>Người liên hệ:</span></td>
