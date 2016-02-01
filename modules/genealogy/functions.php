@@ -56,7 +56,8 @@ $global_array_fam[0] = array(
 	'numlinks' => 3,
 	'description' => '',
 	'inhome' => 0,
-	'keywords' => ''
+	'keywords' => '',
+	'groups_view'=>0
 );
 $fid = 0;
 $parentid = 0;

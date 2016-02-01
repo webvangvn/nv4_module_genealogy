@@ -1,5 +1,14 @@
 <!-- BEGIN: main -->
-
+<div class="col-md-24">	
+	<div class="tab-giapha padding-topbottom">
+		<table class="tabnkv col-md-24 table table-stripeds table-bordereds table-hover">
+			<caption class="title-gia-pha">
+					  Tìm kiếm gia phả : 
+			</caption>
+		</table>
+		<div class="clear" style="height: 0px">&nbsp;</div>
+	</div>
+</div>
 <div class="col-md-24">
 		
 		

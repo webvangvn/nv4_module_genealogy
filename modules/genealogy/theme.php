@@ -530,6 +530,43 @@ function viewfam_location( $genealogy_array, $page_title )
 	return $xtpl->text( 'main' );
 }
 
+function viewfam_user_manager( $genealogy_array, $page_title )
+{
+	global $lang_module, $module_info, $module_name, $module_file, $topicalias, $module_config;
+
+	$xtpl = new XTemplate( 'manager.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file );
+	$xtpl->assign( 'LANG', $lang_module );
+	$xtpl->assign( 'LOCAL_TITLE', $page_title );
+	$xtpl->assign( 'IMGWIDTH1', $module_config[$module_name]['homewidth'] );
+	if( ! empty(  $genealogy_array ) )
+	{
+		foreach(  $genealogy_array as  $genealogy_array_i )
+		{
+			$xtpl->assign( 'DATA', $genealogy_array_i );
+			$xtpl->assign( 'TIME', date( 'H:i',  $genealogy_array_i['publtime'] ) );
+			$xtpl->assign( 'DATE', date( 'd/m/Y',  $genealogy_array_i['publtime'] ) );
+
+			if( ! empty(  $genealogy_array_i['src'] ) )
+			{
+				$xtpl->parse( 'main.loop.homethumb' );
+			}
+
+			if( defined( 'NV_IS_MODADMIN' ) )
+			{
+				$xtpl->assign( 'ADMINLINK', nv_link_edit_page(  $genealogy_array_i['id'] ) . ' ' . nv_link_delete_page(  $genealogy_array_i['id'] ) );
+				$xtpl->parse( 'main.loop.adminlink' );
+			}
+
+			$xtpl->parse( 'main.loop' );
+		}
+	}
+
+	
+
+	$xtpl->parse( 'main' );
+	return $xtpl->text( 'main' );
+}
+
 function view_detail( $viewdetail , $news_contents, $array_keyword, $content_comment )
 {
 	global $lang_module, $module_info, $module_name, $module_file, $topicalias, $module_config, $global_array_fam;
@@ -947,6 +984,95 @@ function manager_theme($news_contents, $list_users, $array_keyword, $content_com
 {
 		global $global_config, $module_name, $module_file, $lang_module, $my_head, $module_info, $op, $global_array_fam, $global_array_location_city, $global_array_location_district, $global_array_location_ward;
 	    $xtpl = new XTemplate("manager-genealogy.tpl", NV_ROOTDIR . "/themes/" . $module_info['template'] . "/modules/" . $module_file);
+    $xtpl->assign('LANG', $lang_module);
+    $xtpl->assign('NV_ACTION_FILE', nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] .'/Manager'  . $global_config['rewrite_exturl'], true ));
+    $xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
+    $xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
+    $xtpl->assign('MODULE_NAME', $module_name);
+    $xtpl->assign('TEMPLATE', $module_info['template']);
+	
+    $xtpl->assign('OP', $op);
+
+
+    foreach($global_array_fam as $global_array_fam_i)
+	{
+        $global_array_fam_i['selected'] = ($global_array_fam_i['fid'] == $news_contents['fid']) ? ' selected="selected"' : '';
+        $xtpl->assign('FAMILY', $global_array_fam_i);
+        $xtpl->parse('main.family');
+    }
+
+    foreach ($global_array_location_city as $global_array_city_i)
+	{
+        $global_array_city_i['selected'] = ($global_array_city_i['city_id'] == $news_contents['cityid']) ? ' selected="selected"' : '';
+        $xtpl->assign('CITY', $global_array_city_i);
+        $xtpl->parse('main.city');
+    }
+	foreach ($global_array_location_district as $global_array_district_i)
+	{
+        $global_array_district_i['selected'] = ($global_array_district_i['district_id'] == $news_contents['districtid']) ? ' selected="selected"' : '';
+        $xtpl->assign('DISTRICT', $global_array_district_i);
+        $xtpl->parse('main.district');
+    }
+	foreach ($global_array_location_ward as $global_array_ward_i)
+	{
+        $global_array_ward_i['selected'] = ($global_array_ward_i['ward_id'] == $news_contents['wardid']) ? ' selected="selected"' : '';
+        $xtpl->assign('WARD', $global_array_ward_i);
+        $xtpl->parse('main.ward');
+    }
+
+ /*   
+    $post['status_checked'] = ($post['status']) ? ' checked="checked"' : '';
+*/
+    $array_who_view = array(0 => $lang_module['who_view0'], 1 => $lang_module['who_view1'], 2 => $lang_module['who_view2']);
+    foreach ($array_who_view as $key => $value)
+    {
+        $row = array('id' => $key, 'title' => $value, 'selected' =>  '');
+
+        $xtpl->assign('WHO_VIEW', $row);
+        $xtpl->parse('main.who_view');
+    }
+    
+
+
+	if (nv_function_exists('nv_aleditor'))
+    {
+        $news_contents['bodytext'] = nv_aleditor('bodytext', '100%', '200px', $news_contents['bodytext']);
+        $news_contents['rule'] = nv_aleditor('rule', '100%', '200px', $news_contents['rule']);
+        $news_contents['content'] = nv_aleditor('content', '100%', '200px', $news_contents['content']);
+    }
+    else
+    {
+        $news_contents['bodytext'] = "<textarea style=\"width: 100%\" name=\"bodytext\" cols=\"20\" rows=\"15\">" . $news_contents['bodytext'] . "</textarea>";
+        $news_contents['rule'] = "<textarea style=\"width: 100%\" name=\"rule\" cols=\"20\" rows=\"15\">" . $news_contents['rulet'] . "</textarea>";
+        $news_contents['content'] = "<textarea style=\"width: 100%\" name=\"content\" cols=\"20\" rows=\"15\">" . $news_contents['content'] . "</textarea>";
+    }
+	$xtpl->assign('DATA', $news_contents);
+	
+	 if (!empty($list_users))
+    {
+		
+        $xtpl->assign('DATATREE', nv_manager_viewdirtree_genealogy(0,'manager-genealogy'));
+        $xtpl->parse('main.foldertree');
+		if( defined( 'NV_IS_GENEALOGY_MANAGER' )){
+			$xtpl->parse('main.contextMenu');
+		}
+    }
+    else
+    {
+		if( defined( 'NV_IS_GENEALOGY_MANAGER' )){
+			$xtpl->parse('main.create_users');
+		}else{
+			$xtpl->parse('main.no_list');
+		}
+    }
+    $xtpl->parse('main');
+    return $xtpl->text('main');
+
+}
+function create_genealogy($news_contents, $list_users, $array_keyword, $content_comment)
+{
+		global $global_config, $module_name, $module_file, $lang_module, $my_head, $module_info, $op, $global_array_fam, $global_array_location_city, $global_array_location_district, $global_array_location_ward;
+	    $xtpl = new XTemplate("create-genealogy.tpl", NV_ROOTDIR . "/themes/" . $module_info['template'] . "/modules/" . $module_file);
     $xtpl->assign('LANG', $lang_module);
     $xtpl->assign('NV_ACTION_FILE', nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_fam[$news_contents['fid']]['alias'] . '/' . $news_contents['alias'] .'/Manager'  . $global_config['rewrite_exturl'], true ));
     $xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);

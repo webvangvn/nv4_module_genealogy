@@ -50,6 +50,18 @@ function get_alias() {
 	return false;
 }
 
+function creategenealogy(userid) {
+	$("div#create_genealogy").dialog({
+						autoOpen : false,
+						width : 800,
+						height : 500,
+						modal : true,
+						position : "center"
+					}).dialog("open");
+					$("#modalIFrame").attr('src', nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=creategenealogy&userid='+userid);
+	return false;
+}
+
 $(window).load(function(){
 	var newsW = $('#news-bodyhtml').innerWidth();
 	$.each($('#news-bodyhtml img'), function(){
@@ -62,3 +74,4 @@ $(window).load(function(){
 		}
 	});
 });
+

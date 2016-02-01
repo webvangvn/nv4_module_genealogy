@@ -704,7 +704,67 @@ if( nv_user_in_groups( $global_array_fam[$fid]['groups_view'] ) )
 }
 else
 {
-	$contents = no_permission( $global_array_fam[$fid]['groups_view'] );
+	//$contents = no_permission( $global_array_fam[$fid]['groups_view'] );
+	if( ! defined( 'NV_IS_USER' ) )
+	{
+		$url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=users&' . NV_OP_VARIABLE . '=login';
+		$nv_redirect = nv_get_redirect();
+		if( ! empty( $nv_redirect ) ) $url .= '&nv_redirect=' . $nv_redirect;
+		Header( 'Location: ' . nv_url_rewrite( $url, true ) );
+		exit();
+	}
+	else
+	{
+		$item_array = array();
+		$end_weight = 0;
+
+		$db->sqlreset()
+			->select( '*' )
+			->from( NV_PREFIXLANG . '_' . $module_data . '_genealogy ' )
+			->where( 'status= 1 AND admin_id='.$user_info['userid'] );
+		$num_items = $db->query( $db->sql() );
+		$db->select( 'id, fid, admin_id, author, patriarch, addtime, edittime, publtime, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, allowed_rating, hitstotal, hitscm, total_rating, click_rating, years, number' )
+			->order( 'publtime ASC' );
+		$result = $db->query( $db->sql() );
+		while( $item = $result->fetch() )
+		{
+			$sqllistuser = $db->sqlreset()->query( 'SELECT max(lev) as maxlev FROM ' . NV_PREFIXLANG . '_'. $module_data .' WHERE gid = "' . $item['id'] . '" ORDER BY weight ASC' )->fetch();
+			$item['maxlev']=$sqllistuser['maxlev'];
+			//die($item['id']);	
+			if( $item['homeimgthumb'] == 1 )//image thumb
+			{
+				$item['src'] = NV_BASE_SITEURL . NV_FILES_DIR . '/' . $module_upload . '/' . $item['homeimgfile'];
+			}
+			elseif( $item['homeimgthumb'] == 2 )//image file
+			{
+				$item['src'] = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_upload . '/' . $item['homeimgfile'];
+			}
+			elseif( $item['homeimgthumb'] == 3 )//image url
+			{
+				$item['src'] = $item['homeimgfile'];
+			}
+			elseif( ! empty( $show_no_image ) )//no image
+			{
+				$item['src'] = NV_BASE_SITEURL . $show_no_image;
+			}
+			else
+			{
+				$item['src'] = '';
+			}
+
+			$item['alt'] = ! empty( $item['homeimgalt'] ) ? $item['homeimgalt'] : $item['title'];
+			$item['width'] = $module_config[$module_name]['homewidth'];
+
+			$end_weight++;
+			$item['weight']=$end_weight;
+			$item['link'] = $global_array_fam[$item['fid']]['link'] . '/' . $item['alias']  . $global_config['rewrite_exturl'];
+			$item['linkmanager'] = $global_array_fam[$item['fid']]['link'] . '/' . $item['alias'] . '/Manager' . $global_config['rewrite_exturl'];
+			$item_array[] = $item;
+		}
+		$result->closeCursor();
+		unset( $query, $row );
+		$contents = viewfam_user_manager( $item_array, $page_title );
+	}
 }
 
 include NV_ROOTDIR . '/includes/header.php';
